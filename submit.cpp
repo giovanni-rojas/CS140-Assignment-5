@@ -64,7 +64,7 @@ void life(int *a, unsigned int n, unsigned int iter, int *livecount)
 
     //copy array into a temp array for modification
       int temp[n*n];
-      temp[0:n:1] = a[0:n:1];
+      temp[0:n*n:1] = a[0:n*n:1];
      
     
     for (int i = 0; i < n; i++){
@@ -96,12 +96,15 @@ void life(int *a, unsigned int n, unsigned int iter, int *livecount)
 	  cout << "occupied -> death by loneliness" << endl;
 	  //dies
 	}
+	if(a[n*i + j] == 0 && counter != 3){
+	  cout << "empty -> empty" << endl;
+	}
 	
       }
     }
 
   //array is now updated
-    a[0:n:1] = temp[0:n:1];
+    a[0:n*n:1] = temp[0:n*n:1];
 
     //  #if DEBUG == 1
     //if (iteration % (iter/10) == 0){
@@ -111,7 +114,8 @@ void life(int *a, unsigned int n, unsigned int iter, int *livecount)
     // }
     //#endif
     
-    cout << "current iteration's livecount is " << countlive(a,n) << endl;   
+    cout << "current iteration's livecount is " << countlive(a,n) << endl;
+
   }
 
 }
