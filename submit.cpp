@@ -64,45 +64,54 @@ void life(int *a, unsigned int n, unsigned int iter, int *livecount)
 
     //copy array into a temp array for modification
       int temp[n*n];
-      a[0:n:1] = temp[0:n:1];
+      temp[0:n:1] = a[0:n:1];
      
     
     for (int i = 0; i < n; i++){
       for (int j = 0; j < n; j++){
 	int counter = 0;
-	int north = (i-1) % n;
+	int north = (n+i-1) % n;
 	int south = (i+1) % n;
 	int west = (j-1) % n;
 	int east = (j+1) % n;
       
 	//count the neighbors counterclockwise from north
-	counter = a[north + north*j] + a[north + north*west] + a[i + i*west] + a[south + south*west]
-	  + a[south + south*j] + a[south + south*east] + a[i + i*east] + a[north+ north*east];
+	counter = a[n*north+j] + a[n*north + west] + a[n*i + west] + a[n*south + west]
+	  + a[n*south + j] + a[n*south + east] + a[n*i + east] + a[n*north + east];
 
-	if(counter > 3 || counter < 2){
-	  temp[i + i*j] = 0;
+	if(a[n*i + j] == 1 && counter > 3){
+	  temp[n*i + j] = 0;
+	  cout << "occupied -> death by overcrowd" << endl;
 	} //dies
-	if(counter == 2){
-	  temp[i + i*j] = a[i + i*j];
+	if(a[n*i + j] == 1 && (counter == 2 || counter == 3)){
+	  temp[n*i + j] = a[n*i + j];
+	  cout << "occupied -> occupied by nothing" << endl;
 	} //nothing
-	if(counter == 3){
-	  temp[i + i*j] = 1;
+	if(a[n*i + j] == 0 && counter == 3){
+	  temp[n*i + j] = 1;
+	  cout << "empty -> occupied by birth" << endl;
 	} //birth
+	if(a[n*i + j] == 1 && counter < 2){
+	  temp[n*i + j] = 0;
+	  cout << "occupied -> death by loneliness" << endl;
+	  //dies
+	}
+	
       }
     }
 
   //array is now updated
-    temp[0:n:1] = a[0:n:1];
-    //copy(temp, a);
+    a[0:n:1] = temp[0:n:1];
 
-    #if DEBUG == 1
-    if (iteration % (iter/10) == 0){
-      int total_lives = countlive(a, n);
-      livecount[livecounter] = total_lives;
-      livecounter++;
-    }
-    #endif
-      
+    //  #if DEBUG == 1
+    //if (iteration % (iter/10) == 0){
+    //  int total_lives = countlive(a, n);
+    //  livecount[livecounter] = total_lives;
+    //  livecounter++;
+    // }
+    //#endif
+    
+    cout << "current iteration's livecount is " << countlive(a,n) << endl;   
   }
 
 }
