@@ -15,10 +15,24 @@ using namespace std;
 void genlife(int *a, unsigned int n)
 {
   for (int i = 0; i < n; i++){
-    for (int j = 0; j < n; j++){      
-      a[i + i*j] = rand()%2;
-    }
+   for (int j = 0; j < n; j++)
+     a[j + i*n] = 0;
   }
+ 
+  
+ int glider[] = {1, 1, 1, 1, 0, 0, 0, 1, 0};
+ int size = sizeof(glider)/sizeof(glider[0]);
+ 
+ double dub_j = n/3.0;
+ double dub_k = n/5.0;
+ 
+ int i = 0;
+ for(int j = round(dub_j); j < round(dub_j) + 3; j++){
+   for(int k = round(dub_k); k < round(dub_k) + 3; k++){
+     a[k + n*j] = glider[i];
+     i++;
+   }
+ }
 }
 
 //Read the life matrix from a file
@@ -72,34 +86,34 @@ void life(int *a, unsigned int n, unsigned int iter, int *livecount)
 	int counter = 0;
 	int north = (n+i-1) % n;
 	int south = (i+1) % n;
-	int west = (j-1) % n;
+	int west = (n+j-1) % n;
 	int east = (j+1) % n;
       
 	//count the neighbors counterclockwise from north
 	counter = a[n*north+j] + a[n*north + west] + a[n*i + west] + a[n*south + west]
 	  + a[n*south + j] + a[n*south + east] + a[n*i + east] + a[n*north + east];
 
-	if(a[n*i + j] == 1 && counter > 3){
-	  temp[n*i + j] = 0;
-	  cout << "occupied -> death by overcrowd" << endl;
-	} //dies
-	if(a[n*i + j] == 1 && (counter == 2 || counter == 3)){
-	  temp[n*i + j] = a[n*i + j];
-	  cout << "occupied -> occupied by nothing" << endl;
-	} //nothing
+
 	if(a[n*i + j] == 0 && counter == 3){
 	  temp[n*i + j] = 1;
 	  cout << "empty -> occupied by birth" << endl;
 	} //birth
+	
+	if(a[n*i + j] == 1 && (counter == 2 || counter == 3)){
+	  temp[n*i + j] = a[n*i + j];
+	  cout << "occupied -> occupied still" << endl;
+	} //nothing
+		
+	if(a[n*i + j] == 1 && counter > 3){
+	  temp[n*i + j] = 0;
+	  cout << "occupied -> death by overcrowd" << endl;
+	} //dies of overcrowd
+	
 	if(a[n*i + j] == 1 && counter < 2){
 	  temp[n*i + j] = 0;
 	  cout << "occupied -> death by loneliness" << endl;
-	  //dies
+	  //dies of loneliness
 	}
-	if(a[n*i + j] == 0 && counter != 3){
-	  cout << "empty -> empty" << endl;
-	}
-	
       }
     }
 
